@@ -1,15 +1,12 @@
-const nodemailer = require('nodemailer');
+const nodeMailer = require('nodemailer');
 
 function sendMail(toSend) {
-    var transporter = nodemailer.createTransport({
+    let transporter = nodeMailer.createTransport({
         service: 'gmail',
-        auth: {
-            user: 'ordercompany66@gmail.com',
-            pass: 'rakib2015'
-        }
+        auth: {user: 'ordercompany66@gmail.com', pass: 'rakib2015'}
     });
 
-    var mailOptions = {
+    let mailOptions = {
         from: 'ordercompany66@gmail.com',
         to: toSend,
         subject: 'From Oil-Pump',
