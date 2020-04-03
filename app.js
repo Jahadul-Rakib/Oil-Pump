@@ -3,7 +3,7 @@ const app = express();
 app.use(express.json());
 const mongoose = require('mongoose');
 
-const user = require('./route/user_route');
+const user = require('./app_modules/route/user_route');
 
 app.use('/user', user);
 
