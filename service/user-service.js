@@ -1,7 +1,7 @@
 const UserModel = require('../model/user');
 const mailService = require('../utils/mail_service');
 module.exports = class UserService {
-    saveUser(request, response) {
+    async saveUser(request, response) {
         try {
             const user = new UserModel({
                 userName: request.body.userName,
@@ -10,7 +10,7 @@ module.exports = class UserService {
                 phoneNumber: request.body.phoneNumber,
                 userType: request.body.userType
             });
-            let newVar = user.save();
+            let newVar = await user.save();
             if (newVar) {
                 mailService.sendMail(user['userEmail']);
             }
@@ -19,7 +19,4 @@ module.exports = class UserService {
             response.status(500).send(e);
         }
     }
-
-
-
 }
