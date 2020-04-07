@@ -19,4 +19,24 @@ module.exports = class UserService {
             response.status(500).send(e);
         }
     }
+
+    async updateUser(request, response) {
+
+        try {
+            let _id = request.params.id;
+            const user = new UserModel({
+                userName: request.body.userName,
+                userEmail: request.body.userEmail,
+                password: request.body.password,
+                phoneNumber: request.body.phoneNumber,
+                userType: request.body.userType
+            });
+            await user.updateOne(_id, user).then(value => {
+                response.status(200).send(value);
+            });
+        } catch (e) {
+            response.status(500).send(e);
+        }
+
+    }
 }
