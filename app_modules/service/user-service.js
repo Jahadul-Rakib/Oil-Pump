@@ -2,7 +2,6 @@ const UserModel = require('../model/user');
 const mailService = require('../utils/mail_service');
 module.exports = class UserService {
     async saveUser(request, response) {
-        try {
             const user = new UserModel({
                 userName: request.body.userName,
                 userEmail: request.body.userEmail,
@@ -15,28 +14,28 @@ module.exports = class UserService {
                 mailService.sendMail(user['userEmail']);
             }
             response.status(200).send(newVar);
-        } catch (e) {
-            response.status(500).send(e);
-        }
     }
 
-    async updateUser(request, response) {
-
-        try {
-            let _id = request.params.id;
-            const user = new UserModel({
-                userName: request.body.userName,
-                userEmail: request.body.userEmail,
-                password: request.body.password,
-                phoneNumber: request.body.phoneNumber,
-                userType: request.body.userType
+    async updateUser( id, request, response) {
+            await UserModel.findByIdAndUpdate(id, {$set: {userName: request.body.userName}}).then(result=>{
+                console.log(result);
+                response.send(result);
             });
-            await user.updateOne(_id, user).then(value => {
-                response.status(200).send(value);
-            });
-        } catch (e) {
-            response.status(500).send(e);
-        }
-
     }
+
+    async getUser(request, response) {
+            await UserModel.find({}).then(result =>{
+                response.send(result);
+            }).catch(e=>{
+                response.send(e);
+            })
+    }
+    async getOneUser(id , request, response){
+            await UserModel.findById({'_id': id}).then(result=>{
+                response.send(result);
+            }).catch(e=>{
+                response.send(e);
+            })
+        
+    };
 }
