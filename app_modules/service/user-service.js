@@ -1,7 +1,7 @@
 const UserModel = require('../model/user');
 const mailService = require('../utils/mail_service');
 const bcrypt = require('bcrypt');
-const JwtToken = require('../service/token_filter');
+const JwtToken = require('../utils/token_filter');
 module.exports = class UserService {
 
     async logIn(request, response) {
