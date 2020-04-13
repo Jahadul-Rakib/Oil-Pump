@@ -1,11 +1,9 @@
 const jwt = require('jsonwebtoken');
-
-module.exports.createToken = function (data) {
-    return jwt.sign(data, 'rakib2015Salt', {/*algorithm: 'RS256', */expiresIn: '30 days'});
-}
-
-module.exports.auth = function (request, response, next) {
-    const token = request.headers('Authorization').replace('Bearer ', '');
+const auth = (req, res, next) => {
+    let token = req.headers['authorization']/*.replace('Bearer ', '')*/;
+    if (token.startsWith('Bearer ')) {
+        token = token.slice(7, token.length);
+    }
     jwt.verify(token, 'rakib2015Salt', (err, decoded) => {
         if (err) {
             throw new Error(err.message);
@@ -15,4 +13,5 @@ module.exports.auth = function (request, response, next) {
             next();
         }
     });
-}
+};
+module.exports = auth;

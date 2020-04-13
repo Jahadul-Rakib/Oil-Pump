@@ -1,7 +1,7 @@
 const UserModel = require('../model/user');
 const mailService = require('../utils/mail_service');
 const bcrypt = require('bcrypt');
-const JwtToken = require('../utils/token_filter');
+const JwtToken = require('../utils/token_provider');
 module.exports = class UserService {
 
     async logIn(request, response) {
@@ -11,7 +11,7 @@ module.exports = class UserService {
                 let userPass = User['password'];
                 let compareSync = bcrypt.compareSync(request.body.password, userPass);
                 if (compareSync) {
-                    let token = await  JwtToken.createToken({_id: User['userEmail']});
+                    let token = await JwtToken({_id: User['_id']});
                     response.send(token);
                 } else {
                     response.send('wrong credintials');
@@ -19,8 +19,6 @@ module.exports = class UserService {
             } else {
                 response.send('User Email Not exist');
             }
-
-
         } catch (e) {
             response.send(e.toString());
         }

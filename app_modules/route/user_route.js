@@ -3,9 +3,7 @@ let router = express.Router();
 
 const UserService = require('../service/user-service');
 const user = new UserService();
-
-const JwtToken = require('../utils/token_filter');
-const auth = JwtToken.auth();
+const auth = require('../utils/token_filter');
 
 router.post('/', (request, response) => {
     user.saveUser(request, response);
