@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
     userName: String,
     userEmail: {
         type: String,
-        index: { unique: true }
+        unique: true
     },
     password: {
         type: String,
@@ -21,4 +21,4 @@ userSchema.pre("save", function (next) {
     next();
 });
 
-module.exports = mongoose.model('user',userSchema);
+module.exports = mongoose.model("user", userSchema);

@@ -11,7 +11,7 @@ module.exports = class UserService {
                 let userPass = User['password'];
                 let compareSync = bcrypt.compareSync(request.body.password, userPass);
                 if (compareSync) {
-                    let token = await new JwtToken().createToken({_id: User['userEmail']});
+                    let token = await  JwtToken.createToken({_id: User['userEmail']});
                     response.send(token);
                 } else {
                     response.send('wrong credintials');

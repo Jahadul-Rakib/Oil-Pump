@@ -4,19 +4,22 @@ let router = express.Router();
 const UserService = require('../service/user-service');
 const user = new UserService();
 
+const JwtToken = require('../utils/token_filter');
+const auth = JwtToken.auth();
+
 router.post('/', (request, response) => {
     user.saveUser(request, response);
 });
-router.put('/:id', (request, response) => {
+router.put('/:id', auth, (request, response) => {
     user.updateUser(request.params.id, request, response);
 });
-router.get('/', (request, response) => {
+router.get('/', auth, (request, response) => {
     user.getUser(request, response);
 });
-router.get('/:id', (request, response) => {
+router.get('/:id', auth, (request, response) => {
     user.getOneUser(request.params.id, request, response);
 });
-router.delete('/:id', (request, response) => {
+router.delete('/:id', auth, (request, response) => {
     user.deleteUser(request.params.id, request, response);
 });
 
