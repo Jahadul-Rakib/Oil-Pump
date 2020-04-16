@@ -4,8 +4,9 @@ let router = express.Router();
 const UserService = require('../service/user-service');
 const user = new UserService();
 const auth = require('../utils/token_filter');
+const upload = require('../utils/image_service');
 
-router.post('/', (request, response) => {
+router.post('/', upload.single( 'file') , (request, response) => {
     user.saveUser(request, response);
 });
 router.put('/:id', auth, (request, response) => {

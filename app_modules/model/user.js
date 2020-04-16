@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     userName: String,
     userEmail: {
         type: String,
@@ -11,7 +11,8 @@ const userSchema = mongoose.Schema({
         required: true
     },
     phoneNumber: String,
-    userType: String
+    userType: String,
+    image:  String
 });
 userSchema.pre("save", function (next) {
     if (!this.isModified("password")) {

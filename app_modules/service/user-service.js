@@ -2,6 +2,8 @@ const UserModel = require('../model/user');
 const mailService = require('../utils/mail_service');
 const bcrypt = require('bcrypt');
 const JwtToken = require('../utils/token_provider');
+const fs = require('fs');
+
 module.exports = class UserService {
 
     async logIn(request, response) {
@@ -31,7 +33,8 @@ module.exports = class UserService {
             userEmail: request.body.userEmail,
             password: request.body.password,
             phoneNumber: request.body.phoneNumber,
-            userType: request.body.userType
+            userType: request.body.userType,
+            image: request.file.path
         });
         UserModel.findOne({userEmail: request.body.userEmail}).then(async r => {
             if (r) {
@@ -66,6 +69,18 @@ module.exports = class UserService {
 
     async getOneUser(id, request, response) {
         await UserModel.findById({'_id': id}).then(result => {
+            let img = fs.readFileSync(result['image']);
+            let type;
+            if (result.image.endsWith('.PNG')) {
+                type = 'png'
+            } else if (result.image.endsWith('.jpg')) {
+                type = 'jpg'
+            } else if (result.image.endsWith('.jpeg')) {
+                type = 'jpeg'
+            }
+
+            result['image'] = `data:image/${type};base64,` + img.toString('base64');
+            console.log(result);
             response.send(result);
         }).catch(e => {
             response.send(e);
