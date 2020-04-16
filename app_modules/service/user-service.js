@@ -1,11 +1,10 @@
 const UserModel = require('../model/user');
-const mailService = require('../utils/mail_service');
+const mailService = require('../utils/mail/mail_service');
 const bcrypt = require('bcrypt');
-const JwtToken = require('../utils/token_provider');
-const fs = require('fs');
-
+const JwtToken = require('../utils/jwt/token_provider');
+const getImage = require('../utils/image/get_image');
+const deleteFile = require('../utils/image/delete_image');
 module.exports = class UserService {
-
     async logIn(request, response) {
         try {
             let User = await UserModel.findOne({userEmail: request.body.userEmail});
@@ -36,6 +35,7 @@ module.exports = class UserService {
             userType: request.body.userType,
             image: request.file.path
         });
+
         UserModel.findOne({userEmail: request.body.userEmail}).then(async r => {
             if (r) {
                 return response.send('User Email Already Exist !!')
@@ -53,6 +53,9 @@ module.exports = class UserService {
     }
 
     async updateUser(id, request, response) {
+        if (request.file.path !== null) {
+
+        }
         await UserModel.findByIdAndUpdate(id, {$set: {userName: request.body.userName}}).then(result => {
             console.log(result);
             response.send(result);
@@ -61,7 +64,13 @@ module.exports = class UserService {
 
     async getUser(request, response) {
         await UserModel.find({}).then(result => {
-            response.send(result);
+            let userList = [];
+            result.forEach(user => {
+                user['image'] = getImage(user['image']);
+                delete user.password;
+                userList.push(user);
+            })
+            response.send(userList);
         }).catch(e => {
             response.send(e);
         })
@@ -69,18 +78,8 @@ module.exports = class UserService {
 
     async getOneUser(id, request, response) {
         await UserModel.findById({'_id': id}).then(result => {
-            let img = fs.readFileSync(result['image']);
-            let type;
-            if (result.image.endsWith('.PNG')) {
-                type = 'png'
-            } else if (result.image.endsWith('.jpg')) {
-                type = 'jpg'
-            } else if (result.image.endsWith('.jpeg')) {
-                type = 'jpeg'
-            }
-
-            result['image'] = `data:image/${type};base64,` + img.toString('base64');
-            console.log(result);
+            result['image'] = getImage(result['image']);
+            delete result.password;
             response.send(result);
         }).catch(e => {
             response.send(e);
@@ -91,6 +90,7 @@ module.exports = class UserService {
     async deleteUser(id, request, response) {
         console.log(UserModel.countDocuments);
         await UserModel.findByIdAndDelete(id).then(result => {
+            deleteFile(result.image);
             response.send(result);
             console.log(UserModel.countDocuments);
         }).catch(e => {

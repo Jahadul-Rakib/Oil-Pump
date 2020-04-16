@@ -3,13 +3,13 @@ let router = express.Router();
 
 const UserService = require('../service/user-service');
 const user = new UserService();
-const auth = require('../utils/token_filter');
-const upload = require('../utils/image_service');
+const auth = require('../utils/jwt/token_filter');
+const upload = require('../utils/image/save_image');
 
 router.post('/', upload.single( 'file') , (request, response) => {
     user.saveUser(request, response);
 });
-router.put('/:id', auth, (request, response) => {
+router.put('/:id', auth, upload.single( 'file'), (request, response) => {
     user.updateUser(request.params.id, request, response);
 });
 router.get('/', auth, (request, response) => {
