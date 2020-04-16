@@ -51,11 +51,15 @@ module.exports = class UserService {
 
 
     }
-
+//problem in upldate method
     async updateUser(id, request, response) {
         if (request.file.path !== null) {
-
+            let userInfo = await UserModel.findById(id);
+            if (userInfo !== null) {
+                deleteFile(userInfo.image);
+            }
         }
+
         await UserModel.findByIdAndUpdate(id, {$set: {userName: request.body.userName}}).then(result => {
             console.log(result);
             response.send(result);
